@@ -9,10 +9,9 @@ from deep_translator import GoogleTranslator
 dict_streamlit.set_page_config(page_title="Prontuario Clinico Rapido", page_icon="⚕️", layout="centered")
 PIN_SEGRETO = "1234"
 
-# --- INIEZIONE CSS PER INGRANDIRE L'INDICE (TABS) E I FONT ---
+# Iniezione CSS per stile
 dict_streamlit.markdown("""
 <style>
-/* Ingrandisce il font delle schede cliccabili (Tabs) */
 .stTabs button p {
     font-size: 1.25rem !important;
     font-weight: bold !important;
@@ -20,7 +19,6 @@ dict_streamlit.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- SISTEMA DI MEMORIA PER NASCONDERE IL PIN ---
 if "autenticato" not in dict_streamlit.session_state:
     dict_streamlit.session_state["autenticato"] = False
 
@@ -75,21 +73,26 @@ if dict_streamlit.session_state["autenticato"]:
             dict_streamlit.session_state["autenticato"] = False
             dict_streamlit.rerun()
             
-    # TITOLO DI RICERCA PIÙ GRANDE
-    dict_streamlit.markdown("### 🔍 Cerca Principio Attivo")
-    nome_farmaco_it = dict_streamlit.text_input("es: furosemide, amoxicillina, fentanil", label_visibility="collapsed")
+    dict_streamlit.markdown("### 🔍 Cerca Principio Active o Nome Commerciale")
+    nome_farmaco_it = dict_streamlit.text_input("es: furosemide, augmentin, tachipirina, fentanil", label_visibility="collapsed")
     
     if nome_farmaco_it:
         dati_pronti = False
         formulazioni_trovate = {}
         
-        # LO SPINNER BLU: Scompare automaticamente appena finisce di caricare!
         with dict_streamlit.spinner("Ricerca e traduzione in corso... ⏳"):
             try:
-                nome_farmaco_en = GoogleTranslator(source='it', target='en').translate(nome_farmaco_it).lower().strip()
+                # Gestione eccezione paracetamolo (USA = acetaminophen)
+                testo_da_tradurre = nome_farmaco_it.lower().strip()
+                if "paracetamolo" in testo_da_tradurre or "paracetamol" in testo_da_tradurre:
+                    nome_farmaco_en = "acetaminophen"
+                else:
+                    nome_farmaco_en = GoogleTranslator(source='it', target='en').translate(testo_da_tradurre).lower().strip()
+                
                 nome_farmaco_url = urllib.parse.quote(nome_farmaco_en)
                 
-                url_api = f"https://api.fda.gov/drug/label.json?search=openfda.generic_name:%22{nome_farmaco_url}%22&limit=200"
+                # NUOVA QUERY POTENZIATA: Cerca sia nel nome generico sia nel nome commerciale (brand_name)
+                url_api = f"https://api.fda.gov/drug/label.json?search=(openfda.generic_name:%22{nome_farmaco_url}%22+OR+openfda.brand_name:%22{nome_farmaco_url}%22)&limit=100"
                 
                 req = urllib.request.Request(url_api, headers={'User-Agent': 'Mozilla/5.0'})
                 with urllib.request.urlopen(req) as risposta:
@@ -97,7 +100,7 @@ if dict_streamlit.session_state["autenticato"]:
                     
                     if "results" in dati:
                         for risultato in dati["results"]:
-                            if "dosage_and_administration" not in risultato and "indications_and_usage" not in risultato:
+                            if "dosage_and_administration" not in resultado and "indications_and_usage" not in risultato:
                                 continue
                                 
                             dati_fda = risultato.get("openfda", {})
@@ -114,7 +117,6 @@ if dict_streamlit.session_state["autenticato"]:
                                         formulazioni_trovate[chiave] = risultato
                                         
                         if not formulazioni_trovate:
-                            # NESSUN BOX GIALLO: aggiungiamo silenziosamente la formulazione
                             nome_chiave = f"Formulazione Standard - {nome_farmaco_it.upper()}"
                             for risultato in dati["results"]:
                                 if "dosage_and_administration" in risultato:
@@ -127,23 +129,20 @@ if dict_streamlit.session_state["autenticato"]:
 
             except urllib.error.HTTPError as e:
                 if e.code == 404:
-                    dict_streamlit.error("❌ Molecola non trovata nel database FDA. Controlla l'ortografia.")
+                    dict_streamlit.error("❌ Farmaco o molecola non trovata nel database FDA. Controlla l'ortografia o prova a inserire il principio attivo anziché il nome commerciale.")
                 else:
                     dict_streamlit.error(f"❌ Errore del server medico ({e.code}). Riprova.")
             except Exception as e:
-                dict_streamlit.error(f"❌ Errore tecnico o di traduzione. Riprova. (Dettaglio: {str(e)})")
+                dict_streamlit.error(f"❌ Errore tecnico o di traduzione. Riprova.")
 
-        # --- FINE CARICAMENTO: I messaggi escono a schermo pulito ---
         if dati_pronti:
-            # Manteniamo la bella icona verde!
-            dict_streamlit.success(f"✅ Molecola trovata: **{nome_farmaco_it.upper()}**")
+            dict_streamlit.success(f"✅ Risultati trovati per: **{nome_farmaco_it.upper()}**")
             
             scelta = dict_streamlit.selectbox("👇 Seleziona la formulazione esatta:", list(formulazioni_trovate.keys()))
             
             if scelta:
                 info_scelta = formulazioni_trovate[scelta]
                 
-                # NOME MOLECOLA AL POSTO DI "GENERICO"
                 if "Formulazione Standard" in scelta:
                     dict_streamlit.markdown(f"### Dati per: {nome_farmaco_it.upper()}")
                 else:
