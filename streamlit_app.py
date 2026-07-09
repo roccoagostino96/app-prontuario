@@ -1,6 +1,7 @@
 import streamlit as dict_streamlit
 import urllib.request
 import urllib.parse
+import urllib.error
 import json
 from deep_translator import GoogleTranslator
 
@@ -54,7 +55,7 @@ if not dict_streamlit.session_state["autenticato"]:
     elif pin_inserito != "":
         dict_streamlit.error("PIN errato. Riprova.")
 
-# --- SCHERMATA APP (Senza PIN visibile) ---
+# --- SCHERMATA APP ---
 if dict_streamlit.session_state["autenticato"]:
     
     col1, col2 = dict_streamlit.columns([8, 2])
@@ -66,15 +67,14 @@ if dict_streamlit.session_state["autenticato"]:
     nome_farmaco_it = dict_streamlit.text_input("🔍 Principio Attivo (es: furosemide, amoxicillina):")
     
     if nome_farmaco_it:
-        dict_streamlit.info("Ricerca di tutte le formulazioni in corso... ⏳")
-        nome_farmaco_en = GoogleTranslator(source='it', target='en').translate(nome_farmaco_it).lower().strip()
-        
-        nome_farmaco_url = urllib.parse.quote(nome_farmaco_en)
-        
-        # IL NUOVO MOTORE DI RICERCA: Forza la FDA a dare solo dati con forma farmaceutica (dosage_form) e cerca su 100 risultati.
-        url_api = f"https://api.fda.gov/drug/label.json?search=openfda.generic_name:{nome_farmaco_url}+AND+_exists_:openfda.dosage_form&limit=100"
-        
+        dict_streamlit.info("Ricerca e traduzione in corso... ⏳")
         try:
+            nome_farmaco_en = GoogleTranslator(source='it', target='en').translate(nome_farmaco_it).lower().strip()
+            nome_farmaco_url = urllib.parse.quote(nome_farmaco_en)
+            
+            # Ricerca infallibile: chiediamo 200 risultati alla FDA senza regole complesse (evitiamo errori)
+            url_api = f"https://api.fda.gov/drug/label.json?search=openfda.generic_name:%22{nome_farmaco_url}%22&limit=200"
+            
             req = urllib.request.Request(url_api, headers={'User-Agent': 'Mozilla/5.0'})
             with urllib.request.urlopen(req) as risposta:
                 dati = json.loads(risposta.read().decode())
@@ -82,6 +82,11 @@ if dict_streamlit.session_state["autenticato"]:
                 if "results" in dati:
                     formulazioni_trovate = {}
                     for risultato in dati["results"]:
+                        
+                        # FILTRO DI FERRO INTERNO: saltiamo a prescindere le materie prime senza informazioni terapeutiche
+                        if "dosage_and_administration" not in risultato and "indications_and_usage" not in risultato:
+                            continue
+                            
                         dati_fda = risultato.get("openfda", {})
                         forme = dati_fda.get("dosage_form", [])
                         vie = dati_fda.get("route", [])
@@ -95,13 +100,19 @@ if dict_streamlit.session_state["autenticato"]:
                                 if chiave not in formulazioni_trovate:
                                     formulazioni_trovate[chiave] = risultato
                                 
+                    # Se malauguratamente non trova nulla di specifico
                     if not formulazioni_trovate:
-                        dict_streamlit.warning("Documenti trovati, ma senza specificazioni di forma. Mostro i dati generali.")
-                        formulazioni_trovate["Generico (Dati non specifici)"] = dati["results"][0]
+                        dict_streamlit.warning("Trovati solo documenti generici senza specificazione della forma farmaceutica.")
+                        for risultato in dati["results"]:
+                            if "dosage_and_administration" in risultato:
+                                formulazioni_trovate["Generico (Dati non specifici)"] = risultato
+                                break
+                        if not formulazioni_trovate:
+                            formulazioni_trovate["Generico"] = dati["results"][0]
 
                     dict_streamlit.success(f"✅ Molecola trovata: **{nome_farmaco_it.upper()}**")
                     
-                    scelta = dict_streamlit.selectbox("👇 Seleziona la formulazione esatta che hai in mano:", list(formulazioni_trovate.keys()))
+                    scelta = dict_streamlit.selectbox("👇 Seleziona la formulazione esatta:", list(formulazioni_trovate.keys()))
                     
                     if scelta:
                         info_scelta = formulazioni_trovate[scelta]
@@ -145,5 +156,10 @@ if dict_streamlit.session_state["autenticato"]:
                                 dict_streamlit.markdown(formatta_a_punti(traduci_in_italiano(testo_contro)))
                             else: dict_streamlit.write("Nessuna controindicazione assoluta segnalata in evidenza.")
 
+        except urllib.error.HTTPError as e:
+            if e.code == 404:
+                dict_streamlit.error("❌ Molecola non trovata nel database FDA. Controlla l'ortografia.")
+            else:
+                dict_streamlit.error(f"❌ Errore del server medico ({e.code}). Riprova.")
         except Exception as e:
-            dict_streamlit.error("Molecola non trovata nel database ufficiale o errore di connessione. Controlla l'ortografia.")
+            dict_streamlit.error(f"❌ Errore tecnico o di traduzione. Riprova. (Dettaglio: {str(e)})")
