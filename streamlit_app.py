@@ -3,10 +3,11 @@ import pandas as pd
 import json
 import os
 
-# --- 1. Caricamento Dati ---
+# --- 1. CONFIGURAZIONE E CARICAMENTO ---
+st.set_page_config(page_title="Prontuario 2.0", page_icon="💊")
+
 @st.cache_data
 def load_data():
-    # Carica database personale (Gold)
     db_gold = {}
     if os.path.exists('dati_aifa.json'):
         try:
@@ -15,16 +16,12 @@ def load_data():
         except:
             pass
     
-    # Carica file CSV (Master)
     files = ['anagrafica_AD.csv', 'anagrafica_EH.csv', 'anagrafica_IM.csv', 'anagrafica_NR.csv', 'anagrafica_SZ.csv']
     df_list = []
-    
     for f in files:
         if os.path.exists(f):
-            # Forza sep=';' e header=1 per saltare la prima riga "sporca"
+            # Forza separatore ; e salta riga 0 (intestazioni alla riga 1)
             df_temp = pd.read_csv(f, sep=';', header=1, engine='python', on_bad_lines='skip')
-            
-            # Pulisce gli spazi dai nomi delle colonne
             df_temp.columns = df_temp.columns.str.strip()
             df_list.append(df_temp)
     
@@ -33,44 +30,71 @@ def load_data():
 
 db_gold, db_master = load_data()
 
-# --- 2. Interfaccia ---
-st.set_page_config(page_title="Prontuario 2.0", page_icon="💊")
+# Dizionario icone per una visualizzazione uniforme
+ICON_MAP = {
+    "DENOMINAZIONE": "🏷️",
+    "FORMA": "📦",
+    "PA_ASSOCIATI": "🧪",
+    "RAGIONE_SOCIALE": "🏭",
+    "FORNITURA": "📝",
+    "LINK_FI": "🔗",
+    "LINK_RCP": "📄",
+    "POSOLOGIA": "📋",
+    "TRITURABILE": "✂️",
+    "NOTE": "💡"
+}
 
+# --- 2. LOGIN ---
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
 
 if not st.session_state.logged_in:
     st.title("💊 Prontuario 2.0")
-    password = st.text_input("Password:", type="password")
+    st.caption("created by Rocco Agostino")
+    password = st.text_input("Inserisci password:", type="password")
     if password == "1234":
         st.session_state.logged_in = True
         st.rerun()
     st.stop()
 
+# --- 3. INTERFACCIA PRINCIPALE ---
 st.title("💊 Prontuario 2.0")
+st.caption("Accesso autorizzato - Benvenuto, Rocco")
+
 query = st.text_input("🔍 Cerca farmaco:").strip().lower()
-mostra_debug = st.checkbox("Mostra info tecniche (DEBUG)")
 
 if query:
     db_gold_lower = {k.lower(): v for k, v in db_gold.items()}
     
+    # --- LOGICA DI VISUALIZZAZIONE UNIFICATA ---
+    
+    # A. SE TROVATO NEL GOLD
     if query in db_gold_lower:
         st.success("✅ Trovato nel tuo Prontuario Personale")
-        st.write(db_gold_lower[query])
+        dati = db_gold_lower[query]
+        for key, value in dati.items():
+            icona = ICON_MAP.get(key.upper(), "ℹ️")
+            st.markdown(f"### {icona} {key.replace('_', ' ').upper()}")
+            st.write(value)
+            
+    # B. SE TROVATO NEL MASTER (CSV)
     else:
-        # Cerca la colonna col nome
         col_nome = next((c for c in db_master.columns if 'DENOMINAZIONE' in c.upper()), None)
-        
-        if mostra_debug:
-            st.write(f"Colonna trovata per i nomi: {col_nome}")
-            st.dataframe(db_master.head(2)) # Mostra prime 2 righe per debug
-
         if col_nome:
             risultati = db_master[db_master[col_nome].astype(str).str.lower().str.contains(query, na=False)]
+            
             if not risultati.empty:
-                st.warning("⚠️ Farmaco trovato nell'Anagrafica Ufficiale:")
-                st.dataframe(risultati, use_container_width=True)
+                st.warning("⚠️ Farmaco trovato nell'Anagrafica Ufficiale")
+                # Mostriamo il primo risultato come scheda
+                row = risultati.iloc[0]
+                for col in db_master.columns:
+                    valore = row[col]
+                    # Mostriamo solo se il campo non è vuoto
+                    if pd.notna(valore) and str(valore).strip() != "":
+                        icona = ICON_MAP.get(col.upper(), "ℹ️")
+                        st.markdown(f"**{icona} {col.replace('_', ' ')}**")
+                        st.write(valore)
             else:
                 st.error("❌ Nessun risultato trovato.")
         else:
-            st.error("Errore: Non trovo la colonna DENOMINAZIONE. Controlla il Debug.")
+            st.error("Errore nel caricamento file.")
