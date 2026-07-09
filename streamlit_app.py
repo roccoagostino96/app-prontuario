@@ -43,21 +43,20 @@ def formatta_a_punti(testo):
 
 dict_streamlit.title("⚕️ Prontuario Clinico Rapido")
 
-# --- SCHERMATA BLOCCO (Si vede solo se non hai messo il PIN) ---
+# --- SCHERMATA BLOCCO ---
 if not dict_streamlit.session_state["autenticato"]:
     dict_streamlit.write("Inserisci il PIN di sicurezza per sbloccare il prontuario.")
     pin_inserito = dict_streamlit.text_input("🔑 PIN:", type="password")
     
     if pin_inserito == PIN_SEGRETO:
         dict_streamlit.session_state["autenticato"] = True
-        dict_streamlit.rerun() # Ricarica istantaneamente la pagina per far sparire la barra!
+        dict_streamlit.rerun() 
     elif pin_inserito != "":
         dict_streamlit.error("PIN errato. Riprova.")
 
-# --- SCHERMATA APP (Si vede solo dopo aver messo il PIN) ---
+# --- SCHERMATA APP (Senza PIN visibile) ---
 if dict_streamlit.session_state["autenticato"]:
     
-    # Pulsantino per chiudere l'app e bloccarla
     col1, col2 = dict_streamlit.columns([8, 2])
     with col2:
         if dict_streamlit.button("🔒 Esci"):
@@ -70,14 +69,14 @@ if dict_streamlit.session_state["autenticato"]:
         dict_streamlit.info("Ricerca di tutte le formulazioni in corso... ⏳")
         nome_farmaco_en = GoogleTranslator(source='it', target='en').translate(nome_farmaco_it).lower().strip()
         
-        # Pulizia del testo per evitare errori nel link (es. trasforma gli spazi)
         nome_farmaco_url = urllib.parse.quote(nome_farmaco_en)
         
-        # Ora chiediamo ben 50 documenti diversi, per scovare ogni singola formulazione!
-        url_api = f"https://api.fda.gov/drug/label.json?search=openfda.generic_name:{nome_farmaco_url}&limit=50"
+        # IL NUOVO MOTORE DI RICERCA: Forza la FDA a dare solo dati con forma farmaceutica (dosage_form) e cerca su 100 risultati.
+        url_api = f"https://api.fda.gov/drug/label.json?search=openfda.generic_name:{nome_farmaco_url}+AND+_exists_:openfda.dosage_form&limit=100"
         
         try:
-            with urllib.request.urlopen(url_api) as risposta:
+            req = urllib.request.Request(url_api, headers={'User-Agent': 'Mozilla/5.0'})
+            with urllib.request.urlopen(req) as risposta:
                 dati = json.loads(risposta.read().decode())
                 
                 if "results" in dati:
@@ -87,19 +86,17 @@ if dict_streamlit.session_state["autenticato"]:
                         forme = dati_fda.get("dosage_form", [])
                         vie = dati_fda.get("route", [])
                         
-                        # Se il documento specifica la via e la forma, lo salviamo
                         if forme and vie:
                             forma = forme[0].upper()
                             via = vie[0].upper()
                             
-                            # Escludiamo la polvere grezza per i produttori
-                            if "BULK" not in forma: 
+                            if "BULK" not in forma and "UNSPECIFIED" not in forma: 
                                 chiave = f"{via} - {forma}"
                                 if chiave not in formulazioni_trovate:
                                     formulazioni_trovate[chiave] = risultato
                                 
                     if not formulazioni_trovate:
-                        dict_streamlit.warning("Documenti trovati, ma nessuno specifica la formulazione esatta.")
+                        dict_streamlit.warning("Documenti trovati, ma senza specificazioni di forma. Mostro i dati generali.")
                         formulazioni_trovate["Generico (Dati non specifici)"] = dati["results"][0]
 
                     dict_streamlit.success(f"✅ Molecola trovata: **{nome_farmaco_it.upper()}**")
@@ -111,11 +108,13 @@ if dict_streamlit.session_state["autenticato"]:
                         dict_streamlit.markdown(f"### Dati per: {traduci_in_italiano(scelta)}")
                         
                         scelta_en = scelta.lower()
-                        if "oral" in scelta_en and ("tablet" in scelta_en or "capsule" in scelta_en):
+                        if "oral" in scelta_en and ("tablet" in scelta_en or "capsule" in scelta_en or "pill" in scelta_en):
                             if "extended" in scelta_en or "delayed" in scelta_en or "enteric" in scelta_en or "release" in scelta_en:
                                 dict_streamlit.error("🚨 **ASSOLUTAMENTE NON TRITARE O DIVIDERE.** Formulazione a rilascio modificato/gastroresistente. Alterare la pillola causa tossicità o inefficacia.")
                             else:
-                                dict_streamlit.success("🟢 **TRITABILE/DIVISIBILE.** È una formulazione orale a rilascio immediato standard. Può essere frantumata (es. per pazienti disfagici o SNG) salvo diversa indicazione medica.")
+                                dict_streamlit.success("🟢 **TRITABILE/DIVISIBILE.** Formulazione a rilascio immediato standard. Può essere frantumata salvo diversa indicazione medica (es. sondino).")
+                        elif "suspension" in scelta_en or "syrup" in scelta_en or "solution" in scelta_en or "powder" in scelta_en:
+                            dict_streamlit.success("💧 **FORMA LIQUIDA/SOSPENSIONE ORALE.** Agitare bene prima della somministrazione (se sospensione) o ricostituire correttamente.")
                         elif "injection" in scelta_en or "intravenous" in scelta_en:
                             dict_streamlit.info("💉 **USO PARENTERALE.** Verificare incompatibilità con i liquidi di infusione (es. SF o SG).")
                             
@@ -123,7 +122,7 @@ if dict_streamlit.session_state["autenticato"]:
                         
                         with tab1:
                             if "dosage_and_administration" in info_scelta:
-                                testo_posologia = riassumi_testo(info_scelta["dosage_and_administration"][0], num_frasi=8)
+                                testo_posologia = riassumi_testo(info_scelta["dosage_and_administration"][0], num_frasi=6)
                                 dict_streamlit.markdown(formatta_a_punti(traduci_in_italiano(testo_posologia)))
                             else: dict_streamlit.write("Dato non estratto in sintesi.")
                                 
@@ -136,7 +135,7 @@ if dict_streamlit.session_state["autenticato"]:
                                 
                         with tab3:
                             if "drug_interactions" in info_scelta:
-                                testo_interazioni = riassumi_testo(info_scelta["drug_interactions"][0], num_frasi=5)
+                                testo_interazioni = riassumi_testo(info_scelta["drug_interactions"][0], num_frasi=4)
                                 dict_streamlit.markdown(formatta_a_punti(traduci_in_italiano(testo_interazioni)))
                             else: dict_streamlit.write("Nessuna interazione principale evidenziata.")
                             
@@ -147,4 +146,4 @@ if dict_streamlit.session_state["autenticato"]:
                             else: dict_streamlit.write("Nessuna controindicazione assoluta segnalata in evidenza.")
 
         except Exception as e:
-            dict_streamlit.error("Molecola non trovata nel database ufficiale. Controlla l'ortografia.")
+            dict_streamlit.error("Molecola non trovata nel database ufficiale o errore di connessione. Controlla l'ortografia.")
