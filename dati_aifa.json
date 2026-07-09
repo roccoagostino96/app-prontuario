@@ -1,20 +1,494 @@
 {
   "paracetamolo": {
-    "nome_commerciale": "Tachipirina, Efferalgan",
-    "forma": "Compresse 500mg, 1000mg - Sciroppo - Supposte",
-    "triturabile": "Sì (le compresse standard)",
-    "posologia": "Adulti: 500 mg - 1000 mg ogni 4-6 ore. Dose massima giornaliera: 3000 mg (3 g).\nPediatrica: In base al peso corporeo (es. 15 mg/kg ogni 6 ore).",
-    "controindicazioni": "Ipersensibilità al principio attivo.\nGrave insufficienza epatocellulare.",
-    "interazioni": "Anticoagulanti orali (può potenziarne l'effetto).\nAlcol (aumenta epatotossicità).",
-    "effetti_collaterali": "Rari: Reazioni cutanee (eritema, orticaria).\nMolto rari: Trombocitopenia, epatotossicità (a dosi elevate)."
+    "nome_commerciale": "Tachipirina, Efferalgan, Sanipirina",
+    "forma": "Compresse (500mg, 1000mg), Sciroppo (120mg/5ml), Gocce (100mg/ml), Supposte",
+    "triturabile": "Sì (le compresse standard a rilascio immediato).",
+    "posologia": "• ADULTI: 500mg - 1000mg per singola somministrazione.\n• INTERVALLO: Attendere almeno 4-6 ore tra le dosi.\n• DOSE MAX: Massimo 3000mg (3g) nelle 24 ore. In contesti ospedalieri sotto stretto controllo medico max 4000mg (4g).\n• PEDIATRICA: 15 mg/kg per dose ogni 6 ore. Non superare i 60 mg/kg al giorno.",
+    "controindicazioni": "• Ipersensibilità al principio attivo.\n• Grave insufficienza epatocellulare.",
+    "interazioni": "• ALCOL: Aumenta rischio epatotossicità.\n• ANTICOAGULANTI (es. Warfarin): Può potenziare l'effetto anticoagulante.",
+    "effetti_collaterali": "• RARI: Reazioni cutanee (es. orticaria).\n• ALLERTA: L'epatotossicità insorge in caso di sovradosaggio."
   },
   "furosemide": {
     "nome_commerciale": "Lasix",
-    "forma": "Compresse 25mg - Fiale 20mg/2ml",
-    "triturabile": "Sì",
-    "posologia": "Adulti: 20-40 mg al giorno in una o più somministrazioni.\nDose massima: Titolare in base alla risposta diuretica.",
-    "controindicazioni": "Insufficienza renale con anuria.\nIpokaliemia grave, iponatriemia grave.\nStato pre-comatoso epatico.",
-    "interazioni": "FANS (riducono l'effetto diuretico).\nLitio (aumento tossicità del litio).",
-    "effetti_collaterali": "Squilibri elettrolitici (ipokaliemia, iponatriemia).\nIpotensione ortostatica.\nDisidratazione."
+    "forma": "Compresse (25mg, 500mg), Fiale iniettabili (20mg/2ml)",
+    "triturabile": "Sì (le compresse standard da 25mg).",
+    "posologia": "• ADULTI (ORALE): Dose iniziale 20mg - 40mg al mattino.\n• EV / IM: 20mg - 40mg somministrati lentamente.\n• PEDIATRICA: 1-2 mg/kg per via orale al giorno. Max 6 mg/kg/die.",
+    "controindicazioni": "• Insufficienza renale con anuria resistente.\n• Ipocaliemia e iponatriemia grave.\n• Disidratazione o ipovolemia.",
+    "interazioni": "• FANS: Riducono l'effetto diuretico.\n• LITO: Rischio aumentato di tossicità da litio.",
+    "effetti_collaterali": "• COMUNI: Squilibri elettrolitici (riduzione potassio/sodio), disidratazione, ipotensione ortostatica."
+  },
+  "amoxicillina": {
+    "nome_commerciale": "Zimox, Velamox",
+    "forma": "Capsule rigide (500mg), Compresse solubili (1g), Sospensione orale",
+    "triturabile": "Sì (compresse solubili o apertura capsule standard).",
+    "posologia": "• ADULTI: 500mg - 1g ogni 8-12 ore.\n• PEDIATRICA: 40-90 mg/kg al giorno divisi in 2-3 dosi.",
+    "controindicazioni": "• Allergia nota alle penicilline o cefalosporine.",
+    "interazioni": "• ANTICOAGULANTI ORALI: Può alterare l'INR.\n• CONTRACCETTIVI ORALI: Può ridurne l'efficacia.",
+    "effetti_collaterali": "• COMUNI: Diarrea, nausea, rash cutaneo."
+  },
+  "amoxicillina e acido clavulanico": {
+    "nome_commerciale": "Augmentin, Klavun, Neoduplamox",
+    "forma": "Compresse (875mg/125mg), Polvere per sospensione, Fiale EV",
+    "triturabile": "Sì (le compresse sono divisibili, ma da assumere subito perché sensibili all'umidità).",
+    "posologia": "• ADULTI: 1 compressa (875mg/125mg) ogni 12 ore, oppure ogni 8 ore nelle infezioni gravi.\n• PEDIATRICA: In base al peso, sospensione orale (es. 40-50 mg/kg/die in 2-3 somministrazioni).",
+    "controindicazioni": "• Precedente ittero/insufficienza epatica associata a questo farmaco.\n• Ipersensibilità alle penicilline.",
+    "interazioni": "• ALLOPURINOLO: Aumentato rischio di reazioni cutanee allergiche.",
+    "effetti_collaterali": "• COMUNI: Candidiasi mucocutanea, diarrea (più frequente rispetto alla sola amoxicillina), nausea."
+  },
+  "ibuprofene": {
+    "nome_commerciale": "Brufen, Moment, Nurofen",
+    "forma": "Compresse (200mg, 400mg, 600mg, 800mg), Sciroppo, Bustine",
+    "triturabile": "ATTENZIONE: Le compresse 600mg o a rilascio modificato (es. Brufen 800mg) NON si triturano.",
+    "posologia": "• ADULTI: 200mg - 600mg per dose, 2-3 volte al giorno (a stomaco pieno). Max 1200mg/die (automedicazione) o 2400mg (sotto controllo medico).\n• PEDIATRICA: 20-30 mg/kg/die divisi in 3 dosi.",
+    "controindicazioni": "• Storia di emorragia GI o ulcera peptica attiva.\n• Grave insufficienza cardiaca, renale o epatica.\n• Terzo trimestre di gravidanza.",
+    "interazioni": "• ASPIRINA: Può inibire l'effetto antiaggregante della cardioaspirina.\n• CORTICOSTEROIDI: Aumentato rischio di ulcere GI.",
+    "effetti_collaterali": "• COMUNI: Pirosi gastrica, dispepsia, dolore addominale."
+  },
+  "ketoprofene": {
+    "nome_commerciale": "Oki, Artrosilene, Ketodol",
+    "forma": "Granulato (80mg), Gocce, Supposte, Fiale IM/EV",
+    "triturabile": "Le capsule a rilascio prolungato NON sono triturabili.",
+    "posologia": "• ADULTI: 80mg (una bustina intera) fino a 3 volte al giorno ai pasti. Max 200mg/die per formulazioni a rilascio prolungato.\n• PEDIATRICA: Sconsigliato sotto i 15 anni per le formulazioni per adulti.",
+    "controindicazioni": "• Insufficienza renale severa, ulcera peptica o pregressi sanguinamenti gastrointestinali da FANS.",
+    "interazioni": "• ALTRI FANS / ANTICOAGULANTI: Rischio severo di emorragie GI.",
+    "effetti_collaterali": "• COMUNI: Bruciore di stomaco, nausea, reazioni fotosensibili (se topico)."
+  },
+  "diclofenac": {
+    "nome_commerciale": "Voltaren, Dicloreum",
+    "forma": "Compresse gastroresistenti (50mg), Fiale IM (75mg), Gel",
+    "triturabile": "NO. Le compresse sono spesso gastroresistenti o a rilascio modificato. Frantumarle danneggia lo stomaco.",
+    "posologia": "• ADULTI: 75-150 mg al giorno in 1 o 2 somministrazioni (a stomaco pieno). Fiale IM: max 2 al giorno in casi gravi.\n• PEDIATRICA: Sconsigliato.",
+    "controindicazioni": "• Insufficienza cardiaca congestizia conclamata o cardiopatia ischemica.\n• Ulcera peptica attiva.",
+    "interazioni": "• DIURETICI RISPARMIATORI DI POTASSIO: Rischio di iperkaliemia.",
+    "effetti_collaterali": "• COMUNI: Nausea, diarrea, vertigini, aumentato rischio cardiovascolare a dosi elevate."
+  },
+  "pantoprazolo": {
+    "nome_commerciale": "Pantorc, Peptazol",
+    "forma": "Compresse gastroresistenti (20mg, 40mg), Flaconcini polvere EV",
+    "triturabile": "ASSOLUTAMENTE NO. Le compresse sono gastroresistenti. Se rotte, il farmaco viene inattivato dall'acido gastrico.",
+    "posologia": "• ADULTI: 20mg (prevenzione o reflusso lieve) o 40mg (cura ulcera o erad. H.pylori) una volta al giorno, preferibilmente 30 minuti prima della colazione.",
+    "controindicazioni": "• Ipersensibilità al principio attivo o ad altri inibitori di pompa protonica (IPP).",
+    "interazioni": "• FARMACI pH-DIPENDENTI (es. Ketoconazolo): Il pantoprazolo ne riduce drasticamente l'assorbimento.",
+    "effetti_collaterali": "• COMUNI: Cefalea, polipi ghiandolari fundici (benigni), disturbi GI.\n• USO A LUNGO TERMINE: Rischio di ipomagnesiemia, aumentato rischio di fratture ossee."
+  },
+  "prednisone": {
+    "nome_commerciale": "Deltacortene",
+    "forma": "Compresse (5mg, 25mg)",
+    "triturabile": "Sì.",
+    "posologia": "• ADULTI: Molto variabile. Di norma 10-25 mg/die per terapie croniche; fino a 50-75 mg/die in condizioni acute severe. Assumere preferibilmente al mattino dopo colazione.\n• SOSPENSIONE: Mai sospendere bruscamente dopo terapia prolungata (rischio insufficienza surrenalica acuta); scalare gradualmente.",
+    "controindicazioni": "• Infezioni micotiche sistemiche, tubercolosi attiva, ulcera peptica grave.",
+    "interazioni": "• FANS: Aumento esponenziale rischio ulcere GI.\n• DIURETICI DISPERDENTI POTASSIO: Aumentato rischio di ipocaliemia severa.",
+    "effetti_collaterali": "• COMUNI (specie a lungo termine): Ritenzione idrica, aumento di peso (faccia a luna piena), insonnia, irrequietezza, iperglicemia, osteoporosi."
+  },
+  "ramipril": {
+    "nome_commerciale": "Triatec",
+    "forma": "Compresse (2.5mg, 5mg, 10mg)",
+    "triturabile": "Sì.",
+    "posologia": "• ADULTI: 2.5 mg/die iniziali (ipertensione) fino a un massimo di 10 mg/die in singola dose. Assumere ogni giorno alla stessa ora.",
+    "controindicazioni": "• Anamnesi di angioedema correlato a precedente terapia con ACE-inibitori.\n• Secondo e terzo trimestre di gravidanza.\n• Stenosi bilaterale dell'arteria renale.",
+    "interazioni": "• RISPARMIATORI DI POTASSIO O INTEGRATORI: Rischio di iperkaliemia grave.\n• FANS: Riducono l'effetto antipertensivo.",
+    "effetti_collaterali": "• COMUNI: Tosse secca stizzosa (motivo frequente di sospensione), ipotensione sintomatica, cefalea."
+  },
+  "colecalciferolo": {
+    "nome_commerciale": "Dibase, Annister",
+    "forma": "Gocce orali (10.000 UI/ml), Fiale orali/IM (100.000 UI, 300.000 UI), Capsule molli (25.000 UI)",
+    "triturabile": "Capsule molli NON triturabili (contengono liquido). Gocce o fiale orali si possono miscelare ai cibi/liquidi.",
+    "posologia": "• ADULTI: Prevenzione carenza: 25.000 UI al mese (o 1.000-2.000 UI/die). Trattamento carenza severa: fino a 50.000 UI a settimana.\n• SOMMINISTRAZIONE: Assumere preferibilmente in concomitanza con pasti ricchi di grassi per migliorarne l'assorbimento.",
+    "controindicazioni": "• Ipercalcemia, ipercalciuria, nefrolitiasi calcica (calcoli renali).",
+    "interazioni": "• DIURETICI TIAZIDICI: Aumentato rischio di ipercalcemia.\n• CORTICOSTEROIDI: Riducono l'efficacia della vitamina D.",
+    "effetti_collaterali": "• RARI/SOVRADOSAGGIO: Anoressia, nausea, sete intensa, poliuria, calcificazione dei tessuti molli (tossicità da eccesso di Vitamina D)."
+  },
+  "metoclopramide": {
+    "nome_commerciale": "Plasil",
+    "forma": "Compresse (10mg), Sciroppo, Fiale IM/EV",
+    "triturabile": "Sì (compresse standard).",
+    "posologia": "• ADULTI: 10 mg fino a 3 volte al giorno (prima dei pasti). Max 30 mg al giorno.\n• DURATA: Per evitare rischi neurologici, il trattamento non deve superare i 5 giorni consecutivi.",
+    "controindicazioni": "• Emorragie o ostruzioni gastrointestinali.\n• Epilessia (può abbassare la soglia convulsiva).\n• Morbo di Parkinson.",
+    "interazioni": "• ALCOL E SEDATIVI (BDZ): Potenziamento dell'effetto sedativo centrale.\n• ANTIPSICOTICI: Aumentato rischio di reazioni extrapiramidali.",
+    "effetti_collaterali": "• COMUNI: Sonnolenza, reazioni extrapiramidali (spasmi muscolari, discinesie tardive) specie nei giovani adulti e a dosi elevate."
+  },
+  "levotiroxina": {
+    "nome_commerciale": "Eutirox, Tiche, Tirosint",
+    "forma": "Compresse divisibili (da 25 fino a 200 mcg), Capsule molli, Soluzione orale in flaconcini",
+    "triturabile": "Compresse sì. Le capsule molli e le soluzioni orali non vanno alterate.",
+    "posologia": "• ADULTI: Dose altamente personalizzata in base ai livelli di TSH. In media 50-150 mcg al giorno.\n• ASSUNZIONE FONDAMENTALE: Tassativamente al mattino a digiuno, almeno 30 minuti (meglio 60) prima di fare colazione, solo con acqua.",
+    "controindicazioni": "• Insufficienza surrenalica non trattata, infarto miocardico acuto, ipertiroidismo.",
+    "interazioni": "• CIBI/CAFFÈ: Riduzione significativa dell'assorbimento se non si aspetta il digiuno prescritto.\n• FERRO/CALCIO/INIBITORI DI POMPA: Riducono enormemente l'assorbimento gastrico del farmaco. Distanziare l'assunzione di almeno 4 ore.",
+    "effetti_collaterali": "• SOVRADOSAGGIO: Palpitazioni, aritmie, tremori, ansia, perdita di peso, sudorazione (sintomi da ipertiroidismo clinico)."
+  },
+  "fentanil": {
+    "nome_commerciale": "Durogesic, Matrifen, Fentanyl, Effentora",
+    "forma": "Cerotti transdermici, Compresse oromucosali/sublinguali, Fiale EV/Epidurale, Spray nasale",
+    "triturabile": "ASSOLUTAMENTE NO. I cerotti non devono MAI essere tagliati. Le formulazioni sublinguali o oromucosali devono sciogliersi lentamente (non deglutire o masticare).",
+    "posologia": "• ADULTI (Cerotti transdermici): Cambiare ogni 72 ore (3 giorni). Dose in base al pregresso uso di oppioidi (es. 12, 25, 50 mcg/h).\n• OROMUCOSALI (Breakthrough pain - Dolore episodico intenso): Solo per pazienti già in terapia cronica con oppioidi di mantenimento.",
+    "controindicazioni": "• Pazienti \"opioid-naive\" (non precedentemente esposti agli oppioidi) nel caso delle formulazioni per dolore episodico.\n• Depressione respiratoria severa.",
+    "interazioni": "• SEDATIVI (BENZODIAZEPINE), ALCOL: Rischio altissimo e letale di depressione respiratoria fatale.\n• INIBITORI DEL CYP3A4 (es. Ritonavir, Ketoconazolo): Aumentano la concentrazione plasmatica di fentanil a livelli tossici.",
+    "effetti_collaterali": "• COMUNI: Nausea, vomito, stipsi severa, sonnolenza.\n• GRAVI: Depressione respiratoria acuta, ipotensione, rigidità muscolare (se somministrato in bolo EV troppo rapido)."
   }
-}
+},"metformina": {
+    "nome_commerciale": "Glucophage, Metforal",
+    "forma": "Compresse (500mg, 850mg, 1000mg)",
+    "triturabile": "Sì, ma attenzione: il gusto è molto amaro.",
+    "posologia": "• ADULTI: Dose iniziale 500-850mg 2-3 volte al giorno durante o dopo i pasti. Dose max: 3000mg/die.",
+    "controindicazioni": "• Insufficienza renale grave (eGFR < 30 ml/min), chetoacidosi diabetica.",
+    "interazioni": "• MEZZI DI CONTRASTO IODATI: Sospendere prima dell'esame per rischio acidosi lattica.",
+    "effetti_collaterali": "• COMUNI: Disturbi gastrointestinali (nausea, diarrea), sapore metallico."
+  },"omeprazolo": {
+    "nome_commerciale": "Antra, Mepral",
+    "forma": "Capsule gastroresistenti (10-20-40mg)",
+    "triturabile": "NO (sono capsule gastroresistenti).",
+    "posologia": "20-40mg al giorno, prima del pasto mattutino.",
+    "controindicazioni": "Ipersensibilità al principio attivo.",
+    "interazioni": "Clopidogrel (riduce efficacia), Vitamina B12 (riduce assorbimento).",
+    "effetti_collaterali": "Cefalea, diarrea, dolore addominale."
+  },
+  "enoxaparina": {
+    "nome_commerciale": "Clexane",
+    "forma": "Siringhe pre-riempite (soluzione iniettabile)",
+    "triturabile": "N/A (iniettabile).",
+    "posologia": "In base al peso e al rischio trombotico (profilassi o terapia).",
+    "controindicazioni": "Emorragia in atto, trombocitopenia da eparina.",
+    "interazioni": "Anticoagulanti orali, FANS, antiaggreganti.",
+    "effetti_collaterali": "Ematomi nel sito di iniezione, emorragie."
+  },
+  "metformina": {
+    "nome_commerciale": "Glucophage, Metforal",
+    "forma": "Compresse (500mg, 850mg, 1000mg)",
+    "triturabile": "Sì.",
+    "posologia": "500-1000mg ai pasti, max 3000mg/die.",
+    "controindicazioni": "Insufficienza renale grave, chetoacidosi.",
+    "interazioni": "Mezzi di contrasto iodati.",
+    "effetti_collaterali": "Disturbi gastrointestinali, sapore metallico."
+  },
+  "salbutamolo": {
+    "nome_commerciale": "Ventolin",
+    "forma": "Inalatore spray, Soluzione da nebulizzare",
+    "triturabile": "N/A.",
+    "posologia": "1-2 puff al bisogno (broncodilatazione).",
+    "controindicazioni": "Ipersensibilità.",
+    "interazioni": "Beta-bloccanti.",
+    "effetti_collaterali": "Tachicardia, tremori, ipokaliemia."
+  },
+  "atropina": {
+    "nome_commerciale": "Atropina solfato",
+    "forma": "Fiale iniettabili",
+    "triturabile": "N/A.",
+    "posologia": "0.5-1mg EV in emergenza (bradicardia).",
+    "controindicazioni": "Glaucoma ad angolo chiuso, ostruzione GI.",
+    "interazioni": "Antistaminici, antidepressivi triciclici.",
+    "effetti_collaterali": "Secchezza fauci, midriasi, tachicardia."
+  },
+  "diazepam": {
+    "nome_commerciale": "Valium, Ansiolin",
+    "forma": "Gocce, compresse, fiale",
+    "triturabile": "Sì.",
+    "posologia": "2-10mg in base all'indicazione (ansia/convulsioni).",
+    "controindicazioni": "Miastenia gravis, insufficienza respiratoria.",
+    "interazioni": "Alcol, altri sedativi.",
+    "effetti_collaterali": "Sonnolenza, atassia, dipendenza."
+  },
+  "bisoprololo": {
+    "nome_commerciale": "Congescor, Sequacor",
+    "forma": "Compresse (1.25, 2.5, 5, 10mg)",
+    "triturabile": "Sì.",
+    "posologia": "1.25-10mg al mattino.",
+    "controindicazioni": "Blocco AV di 2°/3° grado, asma grave.",
+    "interazioni": "Verapamil, diltiazem.",
+    "effetti_collaterali": "Bradicardia, affaticamento, estremità fredde."
+  },
+  "amlodipina": {
+    "nome_commerciale": "Norvasc, Amlodipina",
+    "forma": "Compresse (5mg, 10mg)",
+    "triturabile": "Sì.",
+    "posologia": "5-10mg al giorno.",
+    "controindicazioni": "Ipersensibilità.",
+    "interazioni": "Succo di pompelmo.",
+    "effetti_collaterali": "Edemi periferici, vampate, cefalea."
+  },
+  "atorvastatina": {
+    "nome_commerciale": "Torvast, Totalip",
+    "forma": "Compresse (10, 20, 40, 80mg)",
+    "triturabile": "Sì.",
+    "posologia": "10-80mg al giorno (sera).",
+    "controindicazioni": "Patologie epatiche attive.",
+    "interazioni": "Claritromicina, succo di pompelmo.",
+    "effetti_collaterali": "Mialgia, aumento transaminasi."
+  },
+  "levofloxacina": {
+    "nome_commerciale": "Tavanic, Levoxacin",
+    "forma": "Compresse (500mg), Soluzione EV",
+    "triturabile": "Sì.",
+    "posologia": "500mg 1-2 volte al giorno.",
+    "controindicazioni": "Storia di tendinopatia da chinoloni.",
+    "interazioni": "Antiacidi (distanziare 2 ore).",
+    "effetti_collaterali": "Tendinite, prolungamento QT."
+  },
+  "ceftriaxone": {
+    "nome_commerciale": "Rocefin",
+    "forma": "Polvere per soluzione iniettabile",
+    "triturabile": "N/A.",
+    "posologia": "1-2g al giorno IM o EV.",
+    "controindicazioni": "Ipersensibilità a cefalosporine.",
+    "interazioni": "Soluzioni contenenti calcio.",
+    "effetti_collaterali": "Reazioni locali, diarrea."
+  },
+  "ondansetron": {
+    "nome_commerciale": "Zofran",
+    "forma": "Compresse orosolubili, Fiale",
+    "triturabile": "NO (orosolubile).",
+    "posologia": "4-8mg per nausea/vomito.",
+    "controindicazioni": "Prolungamento QT.",
+    "interazioni": "Amiodarone, antibiotici macrolidi.",
+    "effetti_collaterali": "Cefalea, stipsi, QT lungo."
+  },
+  "lorazepam": {
+    "nome_commerciale": "Tavor, Lorans",
+    "forma": "Compresse, Gocce",
+    "triturabile": "Sì.",
+    "posologia": "0.5-2.5mg al bisogno.",
+    "controindicazioni": "Miastenia, grave insuff. respiratoria.",
+    "interazioni": "Alcol.",
+    "effetti_collaterali": "Sedazione, vertigini."
+  },
+  "idrocortisone": {
+    "nome_commerciale": "Flebocortid",
+    "forma": "Fiale EV/IM",
+    "triturabile": "N/A.",
+    "posologia": "In base all'emergenza (es. 100-500mg).",
+    "controindicazioni": "Infezioni sistemiche.",
+    "interazioni": "Diuretici, anticoagulanti.",
+    "effetti_collaterali": "Iperglicemia, ritenzione idrica."
+  },
+  "aspirina": {
+    "nome_commerciale": "Cardioaspirin, Aspirina",
+    "forma": "Compresse (100mg, 500mg)",
+    "triturabile": "Sì (salvo gastroresistenti).",
+    "posologia": "100mg/die (cardio) o 500mg (dolore).",
+    "controindicazioni": "Ulcera, emorragie, asma da FANS.",
+    "interazioni": "Altri FANS, anticoagulanti.",
+    "effetti_collaterali": "Gastriti, rischio emorragico."
+  },
+  "ranitidina": {
+    "nome_commerciale": "Zantac (Nota: verificare disponibilità corrente)",
+    "forma": "Compresse, Fiale",
+    "triturabile": "Sì.",
+    "posologia": "150mg 2 volte al giorno.",
+    "controindicazioni": "Ipersensibilità.",
+    "interazioni": "Farmaci pH-dipendenti.",
+    "effetti_collaterali": "Cefalea, diarrea."
+  },
+  "aloperidolo": {
+    "nome_commerciale": "Serenase, Haldol",
+    "forma": "Gocce, Compresse, Fiale",
+    "triturabile": "Sì.",
+    "posologia": "0.5-5mg in base alla clinica.",
+    "controindicazioni": "Parkinson, depressione SNC.",
+    "interazioni": "Alcol, altri antipsicotici.",
+    "effetti_collaterali": "Reazioni extrapiramidali, distonia."
+  },
+  "spironolattone": {
+    "nome_commerciale": "Aldactone",
+    "forma": "Compresse (25mg, 100mg)",
+    "triturabile": "Sì.",
+    "posologia": "25-100mg/die.",
+    "controindicazioni": "Iperkaliemia, insuff. renale.",
+    "interazioni": "ACE-inibitori, supplementi potassio.",
+    "effetti_collaterali": "Iperkaliemia, ginecomastia."
+  },
+  "valproato": {
+    "nome_commerciale": "Depakin",
+    "forma": "Compresse, Gocce, Fiale",
+    "triturabile": "Le compresse crono NO.",
+    "posologia": "In base a livelli plasmatici/indicazione.",
+    "controindicazioni": "Epatopatia, gravidanza.",
+    "interazioni": "Altri anticonvulsivanti.",
+    "effetti_collaterali": "Tremore, aumento peso, epatotossicità."
+  },
+  "eparina": {
+    "nome_commerciale": "Eparina Sodica",
+    "forma": "Fiale EV",
+    "triturabile": "N/A.",
+    "posologia": "In base a peso e aPTT.",
+    "controindicazioni": "Emorragia, trombocitopenia indotta.",
+    "interazioni": "Antiaggreganti, FANS.",
+    "effetti_collaterali": "Emorragie, trombocitopenia."
+  },"metoprololo": {
+    "nome_commerciale": "Seloken, Lopresor",
+    "forma": "Compresse (100mg), Fiale",
+    "triturabile": "Sì (compresse standard).",
+    "posologia": "100-200mg/die in 1-2 somministrazioni.",
+    "controindicazioni": "Bradicardia, blocco AV.",
+    "interazioni": "Calcioantagonisti, antiaritmici.",
+    "effetti_collaterali": "Affaticamento, bradicardia, estremità fredde."
+  },
+  "candesartan": {
+    "nome_commerciale": "Blopress, Ratacand",
+    "forma": "Compresse (8, 16, 32mg)",
+    "triturabile": "Sì.",
+    "posologia": "8-32mg al giorno.",
+    "controindicazioni": "Gravidanza, grave insufficienza epatica.",
+    "interazioni": "Supplementi potassio, FANS.",
+    "effetti_collaterali": "Ipotensione, iperkaliemia, capogiri."
+  },
+  "atorvastatina": {
+    "nome_commerciale": "Torvast, Totalip",
+    "forma": "Compresse (10, 20, 40, 80mg)",
+    "triturabile": "Sì.",
+    "posologia": "10-80mg una volta al giorno (sera).",
+    "controindicazioni": "Patologie epatiche attive.",
+    "interazioni": "Claritromicina, succo di pompelmo.",
+    "effetti_collaterali": "Mialgia, aumento transaminasi."
+  },
+  "metformina": {
+    "nome_commerciale": "Glucophage",
+    "forma": "Compresse (500, 850, 1000mg)",
+    "triturabile": "Sì.",
+    "posologia": "500-1000mg ai pasti, max 3000mg/die.",
+    "controindicazioni": "Insufficienza renale grave.",
+    "interazioni": "Mezzi di contrasto iodati.",
+    "effetti_collaterali": "Disturbi gastrointestinali, sapore metallico."
+  },
+  "levotiroxina": {
+    "nome_commerciale": "Eutirox, Tiche",
+    "forma": "Compresse (25-200 mcg)",
+    "triturabile": "Sì.",
+    "posologia": "50-150 mcg al mattino (a digiuno).",
+    "controindicazioni": "Ipertiroidismo non trattato.",
+    "interazioni": "Ferro, calcio, inibitori pompa (distanziare 4h).",
+    "effetti_collaterali": "Palpitazioni, insonnia, tremori."
+  },
+  "enoxaparina": {
+    "nome_commerciale": "Clexane",
+    "forma": "Siringhe pre-riempite",
+    "triturabile": "N/A.",
+    "posologia": "In base a peso e rischio trombotico.",
+    "controindicazioni": "Emorragia, trombocitopenia indotta.",
+    "interazioni": "Antiaggreganti, FANS.",
+    "effetti_collaterali": "Ematomi sito iniezione, sanguinamenti."
+  },
+  "digossina": {
+    "nome_commerciale": "Lanoxin",
+    "forma": "Compresse (0.125, 0.25mg), Fiale",
+    "triturabile": "Sì.",
+    "posologia": "0.125-0.25mg al giorno (con cautela).",
+    "controindicazioni": "Blocco AV, tachicardia ventricolare.",
+    "interazioni": "Diuretici (ipokaliemia aumenta tossicità).",
+    "effetti_collaterali": "Aritmie, nausea, visione disturbata."
+  },
+  "alendronato": {
+    "nome_commerciale": "Fosamax, Alendros",
+    "forma": "Compresse (10mg, 70mg)",
+    "triturabile": "NO.",
+    "posologia": "10mg/die o 70mg/settimana (stare eretti 30min dopo).",
+    "controindicazioni": "Anomalie esofagee, incapacità stare eretti.",
+    "interazioni": "Calcio, antiacidi (distanziare 30min).",
+    "effetti_collaterali": "Esofagite, dolore osseo/articolare."
+  },
+  "tamsulosina": {
+    "nome_commerciale": "Omnic",
+    "forma": "Capsule a rilascio modificato (0.4mg)",
+    "triturabile": "NO (rilascio modificato).",
+    "posologia": "0.4mg dopo colazione.",
+    "controindicazioni": "Ipotensione ortostatica, grave insuff. epatica.",
+    "interazioni": "Altri alfa-bloccanti.",
+    "effetti_collaterali": "Capogiri, eiaculazione retrograda."
+  },
+  "allopurinolo": {
+    "nome_commerciale": "Zyloric",
+    "forma": "Compresse (100mg, 300mg)",
+    "triturabile": "Sì.",
+    "posologia": "100-300mg/die dopo i pasti.",
+    "controindicazioni": "Attacco acuto di gotta.",
+    "interazioni": "Azatioprina, amoxicillina.",
+    "effetti_collaterali": "Rash cutaneo, disturbi gastrici."
+  },
+  "ciprofloxacina": {
+    "nome_commerciale": "Ciproxin",
+    "forma": "Compresse (250, 500, 750mg), Fiale",
+    "triturabile": "Sì.",
+    "posologia": "250-750mg ogni 12 ore.",
+    "controindicazioni": "Tendinite da chinoloni.",
+    "interazioni": "Latticini, calcio, antiacidi.",
+    "effetti_collaterali": "Tendinite, fototossicità, diarrea."
+  },
+  "clopidogrel": {
+    "nome_commerciale": "Plavix",
+    "forma": "Compresse (75mg)",
+    "triturabile": "Sì.",
+    "posologia": "75mg al giorno.",
+    "controindicazioni": "Sanguinamento attivo.",
+    "interazioni": "Omeprazolo, FANS.",
+    "effetti_collaterali": "Ematomi, emorragie."
+  },
+  "acido acetilsalicilico": {
+    "nome_commerciale": "Cardioaspirin, Aspirina",
+    "forma": "Compresse (100mg, 500mg)",
+    "triturabile": "Sì (salvo gastroresistenti).",
+    "posologia": "100mg (cardio) o 500mg (dolore).",
+    "controindicazioni": "Ulcera, emorragie.",
+    "interazioni": "Anticoagulanti, FANS.",
+    "effetti_collaterali": "Gastriti, sanguinamenti."
+  },
+  "domperidone": {
+    "nome_commerciale": "Peridon",
+    "forma": "Compresse (10mg), Gocce",
+    "triturabile": "Sì.",
+    "posologia": "10mg 3 volte al giorno prima dei pasti.",
+    "controindicazioni": "Tumori ipofisari, emorragie GI.",
+    "interazioni": "Antifungini azolici.",
+    "effetti_collaterali": "Cefalea, secchezza bocca, iperprolattinemia."
+  },
+  "idroclorotiazide": {
+    "nome_commerciale": "Esidrex",
+    "forma": "Compresse (12.5mg, 25mg)",
+    "triturabile": "Sì.",
+    "posologia": "12.5-25mg al mattino.",
+    "controindicazioni": "Anuria, insufficienza renale grave.",
+    "interazioni": "Litio, FANS.",
+    "effetti_collaterali": "Ipocaliemia, disidratazione, iperglicemia."
+  },
+  "gabapentin": {
+    "nome_commerciale": "Neurontin",
+    "forma": "Capsule (100, 300, 400mg)",
+    "triturabile": "Capsule possono essere aperte.",
+    "posologia": "300-1800mg/die in 3 dosi.",
+    "controindicazioni": "Ipersensibilità.",
+    "interazioni": "Antiacidi (distanziare 2h).",
+    "effetti_collaterali": "Sonnolenza, capogiri, atassia."
+  },
+  "lansoprazolo": {
+    "nome_commerciale": "Lansoprazolo, Zoton",
+    "forma": "Capsule (15mg, 30mg)",
+    "triturabile": "NO (capsule gastroresistenti).",
+    "posologia": "15-30mg al giorno (mattino).",
+    "controindicazioni": "Ipersensibilità.",
+    "interazioni": "Farmaci pH-dipendenti.",
+    "effetti_collaterali": "Diarrea, cefalea, dolore addominale."
+  },
+  "metilprednisolone": {
+    "nome_commerciale": "Medrol, Urbason",
+    "forma": "Compresse (4, 16mg), Fiale",
+    "triturabile": "Sì.",
+    "posologia": "In base all'indicazione (es. 4-32mg).",
+    "controindicazioni": "Infezioni sistemiche.",
+    "interazioni": "FANS, diuretici.",
+    "effetti_collaterali": "Insonnia, ritenzione idrica, iperglicemia."
+  },
+  "montelukast": {
+    "nome_commerciale": "Singulair",
+    "forma": "Compresse masticabili, bustine",
+    "triturabile": "Masticabili (non tritare).",
+    "posologia": "10mg una volta al giorno (sera).",
+    "controindicazioni": "Ipersensibilità.",
+    "interazioni": "Nessuna rilevante.",
+    "effetti_collaterali": "Incubi, cefalea, dolore addominale."
+  },
+  "valsartan": {
+    "nome_commerciale": "Tareg",
+    "forma": "Compresse (80, 160, 320mg)",
+    "triturabile": "Sì.",
+    "posologia": "80-320mg al giorno.",
+    "controindicazioni": "Gravidanza, grave insuff. epatica.",
+    "interazioni": "Supplementi potassio.",
+    "effetti_collaterali": "Ipotensione, iperkaliemia."
+  }
