@@ -9,7 +9,6 @@ from deep_translator import GoogleTranslator
 dict_streamlit.set_page_config(page_title="Prontuario Clinico Rapido", page_icon="⚕️", layout="centered")
 PIN_SEGRETO = "1234"
 
-# Iniezione CSS per stile
 dict_streamlit.markdown("""
 <style>
 .stTabs button p {
@@ -28,7 +27,8 @@ def traduci_in_italiano(testo):
     try:
         return GoogleTranslator(source='en', target='it').translate(testo_sicuro)
     except:
-        return "Errore di traduzione temporaneo."
+        # Se il traduttore salta, restituisce l'originale in inglese o un avviso pulito (non va in errore rosso!)
+        return f"[Testo in lingua originale per mancata connessione al server di traduzione]:\n\n{testo_sicuro}"
 
 def riassumi_testo(testo, num_frasi=4):
     if not testo: return ""
@@ -53,7 +53,6 @@ def formatta_a_punti(testo):
 
 dict_streamlit.title("⚕️ Prontuario Clinico Rapido")
 
-# --- SCHERMATA BLOCCO ---
 if not dict_streamlit.session_state["autenticato"]:
     dict_streamlit.write("Inserisci il PIN di sicurezza per sbloccare il prontuario.")
     pin_inserito = dict_streamlit.text_input("🔑 PIN:", type="password")
@@ -64,7 +63,6 @@ if not dict_streamlit.session_state["autenticato"]:
     elif pin_inserito != "":
         dict_streamlit.error("PIN errato. Riprova.")
 
-# --- SCHERMATA APP ---
 if dict_streamlit.session_state["autenticato"]:
     
     col1, col2 = dict_streamlit.columns([8, 2])
@@ -82,16 +80,21 @@ if dict_streamlit.session_state["autenticato"]:
         
         with dict_streamlit.spinner("Ricerca e traduzione in corso... ⏳"):
             try:
-                # Gestione eccezione paracetamolo (USA = acetaminophen)
                 testo_da_tradurre = nome_farmaco_it.lower().strip()
-                if "paracetamolo" in testo_da_tradurre or "paracetamol" in testo_da_tradurre:
-                    nome_farmaco_en = "acetaminophen"
-                else:
-                    nome_farmaco_en = GoogleTranslator(source='it', target='en').translate(testo_da_tradurre).lower().strip()
+                
+                # --- BLOCCO ANTI-PANICO DELLA TRADUZIONE ---
+                try:
+                    if "paracetamolo" in testo_da_tradurre or "paracetamol" in testo_da_tradurre:
+                        nome_farmaco_en = "acetaminophen"
+                    else:
+                        nome_farmaco_en = GoogleTranslator(source='it', target='en').translate(testo_da_tradurre).lower().strip()
+                except:
+                    # Se il traduttore cade, bypassalo e usa la parola digitata dall'utente
+                    nome_farmaco_en = testo_da_tradurre
+                # ---------------------------------------------
                 
                 nome_farmaco_url = urllib.parse.quote(nome_farmaco_en)
                 
-                # NUOVA QUERY POTENZIATA: Cerca sia nel nome generico sia nel nome commerciale (brand_name)
                 url_api = f"https://api.fda.gov/drug/label.json?search=(openfda.generic_name:%22{nome_farmaco_url}%22+OR+openfda.brand_name:%22{nome_farmaco_url}%22)&limit=100"
                 
                 req = urllib.request.Request(url_api, headers={'User-Agent': 'Mozilla/5.0'})
@@ -100,7 +103,7 @@ if dict_streamlit.session_state["autenticato"]:
                     
                     if "results" in dati:
                         for risultato in dati["results"]:
-                            if "dosage_and_administration" not in resultado and "indications_and_usage" not in risultato:
+                            if "dosage_and_administration" not in risultato and "indications_and_usage" not in risultato:
                                 continue
                                 
                             dati_fda = risultato.get("openfda", {})
@@ -129,11 +132,12 @@ if dict_streamlit.session_state["autenticato"]:
 
             except urllib.error.HTTPError as e:
                 if e.code == 404:
-                    dict_streamlit.error("❌ Farmaco o molecola non trovata nel database FDA. Controlla l'ortografia o prova a inserire il principio attivo anziché il nome commerciale.")
+                    dict_streamlit.error("❌ Farmaco o molecola non trovata nel database. Assicurati che sia scritta correttamente.")
                 else:
-                    dict_streamlit.error(f"❌ Errore del server medico ({e.code}). Riprova.")
+                    dict_streamlit.error(f"❌ Errore del server medico ({e.code}). Riprova tra qualche istante.")
             except Exception as e:
-                dict_streamlit.error(f"❌ Errore tecnico o di traduzione. Riprova.")
+                # Se c'è un errore davvero insolito, non blocca l'app ma avvisa pulito
+                dict_streamlit.error(f"❌ Impossibile elaborare la richiesta in questo momento. Errore di rete.")
 
         if dati_pronti:
             dict_streamlit.success(f"✅ Risultati trovati per: **{nome_farmaco_it.upper()}**")
