@@ -73,7 +73,7 @@ if dict_streamlit.session_state["autenticato"]:
             dict_streamlit.session_state["autenticato"] = False
             dict_streamlit.rerun()
             
-    dict_streamlit.markdown("### 🔍 Cerca Principio Active o Nome Commerciale")
+    dict_streamlit.markdown("### 🔍 Cerca Principio Attivo o Nome Commerciale")
     nome_farmaco_it = dict_streamlit.text_input("es: furosemide, augmentin, tachipirina, fentanil", label_visibility="collapsed")
     
     if nome_farmaco_it:
