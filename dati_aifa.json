@@ -1,0 +1,20 @@
+{
+  "paracetamolo": {
+    "nome_commerciale": "Tachipirina, Efferalgan",
+    "forma": "Compresse 500mg, 1000mg - Sciroppo - Supposte",
+    "triturabile": "Sì (le compresse standard)",
+    "posologia": "Adulti: 500 mg - 1000 mg ogni 4-6 ore. Dose massima giornaliera: 3000 mg (3 g).\nPediatrica: In base al peso corporeo (es. 15 mg/kg ogni 6 ore).",
+    "controindicazioni": "Ipersensibilità al principio attivo.\nGrave insufficienza epatocellulare.",
+    "interazioni": "Anticoagulanti orali (può potenziarne l'effetto).\nAlcol (aumenta epatotossicità).",
+    "effetti_collaterali": "Rari: Reazioni cutanee (eritema, orticaria).\nMolto rari: Trombocitopenia, epatotossicità (a dosi elevate)."
+  },
+  "furosemide": {
+    "nome_commerciale": "Lasix",
+    "forma": "Compresse 25mg - Fiale 20mg/2ml",
+    "triturabile": "Sì",
+    "posologia": "Adulti: 20-40 mg al giorno in una o più somministrazioni.\nDose massima: Titolare in base alla risposta diuretica.",
+    "controindicazioni": "Insufficienza renale con anuria.\nIpokaliemia grave, iponatriemia grave.\nStato pre-comatoso epatico.",
+    "interazioni": "FANS (riducono l'effetto diuretico).\nLitio (aumento tossicità del litio).",
+    "effetti_collaterali": "Squilibri elettrolitici (ipokaliemia, iponatriemia).\nIpotensione ortostatica.\nDisidratazione."
+  }
+}
