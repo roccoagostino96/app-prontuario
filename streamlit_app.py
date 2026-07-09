@@ -76,13 +76,15 @@ if query:
             st.markdown(f"### {icona} {key.replace('_', ' ').upper()}")
             st.write(value)
     
-    # B. CERCA NEL MASTER
+   # B. CERCA NEL MASTER (Se non trovato nel Gold)
     else:
         col_nome = next((c for c in db_master.columns if 'DENOMINAZIONE' in c.upper()), None)
         if col_nome:
             risultati = db_master[db_master[col_nome].str.lower().str.contains(query, na=False)]
+            
             if not risultati.empty:
-                st.info(f"🔍 Trovati {len(risultati)} risultati nell'anagrafica ufficiale")
+                # Modifica qui: st.warning rende il box giallo, avvisandoti del cambio di database
+                st.warning("⚠️ Farmaco non nel Prontuario Personale. Dati estratti dall'Anagrafica Ufficiale:")
                 st.dataframe(risultati, use_container_width=True)
             else:
-                st.error("❌ Nessun risultato trovato.")
+                st.error("❌ Nessun risultato trovato in nessun database.")
