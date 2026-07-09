@@ -3,71 +3,86 @@ import pandas as pd
 import json
 import os
 
-# --- 1. Caricamento Dati ---
+# --- CONFIGURAZIONE PAGINA ---
+st.set_page_config(page_title="Prontuario 2.0", page_icon="💊")
+
+# --- 1. CARICAMENTO DATI ---
 @st.cache_data
 def load_data():
-    # Carica database personale (Gold)
     db_gold = {}
     if os.path.exists('dati_aifa.json'):
         try:
             with open('dati_aifa.json', 'r', encoding='utf-8') as f:
                 db_gold = json.load(f)
         except:
-            st.warning("Il file JSON ha un errore di sintassi.")
+            pass
     
-    # Carica file CSV (Master)
     files = ['anagrafica_AD.csv', 'anagrafica_EH.csv', 'anagrafica_IM.csv', 'anagrafica_NR.csv', 'anagrafica_SZ.csv']
     df_list = []
-    
     for f in files:
         if os.path.exists(f):
-            # Leggiamo il file senza forzare le colonne, per evitare errori
-            # sep=None capisce da solo se il separatore è virgola o punto e virgola
             df_temp = pd.read_csv(f, sep=None, engine='python', on_bad_lines='skip')
-            
-            # Pulisce i nomi delle colonne da spazi bianchi inutili
             df_temp.columns = df_temp.columns.str.strip()
             df_list.append(df_temp)
     
-    if df_list:
-        db_master = pd.concat(df_list, ignore_index=True)
-    else:
-        db_master = pd.DataFrame()
-        
+    db_master = pd.concat(df_list, ignore_index=True) if df_list else pd.DataFrame()
     return db_gold, db_master
 
-# Carichiamo i dati
+# --- 2. LOGICA AUTENTICAZIONE ---
+if 'logged_in' not in st.session_state:
+    st.session_state.logged_in = False
+
+if not st.session_state.logged_in:
+    st.title("💊 Prontuario 2.0")
+    st.caption("created by Rocco Agostino")
+    password = st.text_input("Inserisci la password per accedere:", type="password")
+    if password == "1234":
+        st.session_state.logged_in = True
+        st.rerun()
+    elif password != "":
+        st.error("Password errata!")
+    st.stop()
+
+# --- 3. INTERFACCIA PRINCIPALE ---
 db_gold, db_master = load_data()
 
-# --- 2. Interfaccia ---
-st.title("Prontuario Clinico AIFA")
-query = st.text_input("Inserisci il nome del farmaco:").strip().lower()
+st.title("💊 Prontuario 2.0")
+st.caption("Accesso autorizzato - Benvenuto, Rocco")
+
+query = st.text_input("🔍 Cerca farmaco:").strip().lower()
+
+# Mappatura icone per le sezioni
+icons = {
+    "nome_commerciale": "🏷️",
+    "forma": "📦",
+    "triturabile": "✂️",
+    "posologia": "📋",
+    "controindicazioni": "🚫",
+    "interazioni": "⚠️",
+    "effetti_collaterali": "🩺"
+}
 
 if query:
-    # A. CERCA NEL GOLD (Priorità)
-    # Convertiamo le chiavi del JSON in minuscolo per confronto facile
     db_gold_lower = {k.lower(): v for k, v in db_gold.items()}
     
+    # A. CERCA NEL GOLD
     if query in db_gold_lower:
-        st.success("Trovato nel tuo Prontuario Personale")
-        st.write(db_gold_lower[query])
-    
-    # B. CERCA NEL MASTER (Se non trovato nel Gold)
-    else:
-        # Controlliamo se esiste una colonna chiamata 'DENOMINAZIONE' o simile
-        col_nome = None
-        for col in db_master.columns:
-            if 'DENOMINAZIONE' in col.upper():
-                col_nome = col
-                break
+        st.success("✅ Trovato nel tuo Prontuario Personale")
+        dati = db_gold_lower[query]
         
+        # Visualizzazione formattata
+        for key, value in dati.items():
+            icona = icons.get(key, "ℹ️")
+            st.markdown(f"### {icona} {key.replace('_', ' ').upper()}")
+            st.write(value)
+    
+    # B. CERCA NEL MASTER
+    else:
+        col_nome = next((c for c in db_master.columns if 'DENOMINAZIONE' in c.upper()), None)
         if col_nome:
             risultati = db_master[db_master[col_nome].str.lower().str.contains(query, na=False)]
-            
             if not risultati.empty:
-                st.info(f"Trovati {len(risultati)} risultati nell'anagrafica ufficiale:")
-                st.dataframe(risultati)
+                st.info(f"🔍 Trovati {len(risultati)} risultati nell'anagrafica ufficiale")
+                st.dataframe(risultati, use_container_width=True)
             else:
-                st.error("Farmaco non trovato né nel tuo prontuario, né negli archivi ufficiali.")
-        else:
-            st.error("Errore: Non riesco a trovare la colonna dei nomi nei file CSV. Colonne trovate: " + str(list(db_master.columns)))
+                st.error("❌ Nessun risultato trovato.")
