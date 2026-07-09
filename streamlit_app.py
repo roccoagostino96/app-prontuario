@@ -19,20 +19,12 @@ def load_data():
     files = ['anagrafica_AD.csv', 'anagrafica_EH.csv', 'anagrafica_IM.csv', 'anagrafica_NR.csv', 'anagrafica_SZ.csv']
     df_list = []
     
-    # Lista delle colonne che hai confermato
-    cols_to_use = [
-        'CODICE_AIC', 'COD_FARMACO', 'COD_CONFEZIONE', 'DENOMINAZIONE', 
-        'DESCRIZIONE', 'CODICE_DITTA', 'RAGIONE_SALES', 'STATO_AMMINISTRATIVO', 
-        'TIPO_PROCEDURA', 'FORMA', 'CODICE_ATC', 'PA_ASSOCIATI', 
-        'FORNITURA', 'LINK_FI', 'LINK_RCP'
-    ]
-
     for f in files:
         if os.path.exists(f):
-            # header=1 è il comando magico che salta la prima riga "sporca"
-            df_temp = pd.read_csv(f, sep=None, engine='python', on_bad_lines='skip', header=1)
+            # Forza sep=';' e header=1 per saltare la prima riga "sporca"
+            df_temp = pd.read_csv(f, sep=';', header=1, engine='python', on_bad_lines='skip')
             
-            # Pulisce gli spazi nei nomi delle colonne
+            # Pulisce gli spazi dai nomi delle colonne
             df_temp.columns = df_temp.columns.str.strip()
             df_list.append(df_temp)
     
@@ -57,8 +49,6 @@ if not st.session_state.logged_in:
 
 st.title("💊 Prontuario 2.0")
 query = st.text_input("🔍 Cerca farmaco:").strip().lower()
-
-# Debug switch
 mostra_debug = st.checkbox("Mostra info tecniche (DEBUG)")
 
 if query:
@@ -68,12 +58,12 @@ if query:
         st.success("✅ Trovato nel tuo Prontuario Personale")
         st.write(db_gold_lower[query])
     else:
-        # Cerca la colonna col nome (cerchiamo 'DENOMINAZIONE')
+        # Cerca la colonna col nome
         col_nome = next((c for c in db_master.columns if 'DENOMINAZIONE' in c.upper()), None)
         
         if mostra_debug:
             st.write(f"Colonna trovata per i nomi: {col_nome}")
-            st.write("Prime 5 colonne:", db_master.columns.tolist()[:5])
+            st.dataframe(db_master.head(2)) # Mostra prime 2 righe per debug
 
         if col_nome:
             risultati = db_master[db_master[col_nome].astype(str).str.lower().str.contains(query, na=False)]
