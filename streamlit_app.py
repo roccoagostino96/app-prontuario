@@ -1,5 +1,6 @@
 import streamlit as dict_streamlit
 import urllib.request
+import urllib.parse
 import json
 from deep_translator import GoogleTranslator
 
@@ -7,16 +8,19 @@ from deep_translator import GoogleTranslator
 dict_streamlit.set_page_config(page_title="Prontuario Clinico Rapido", page_icon="⚕️", layout="centered")
 PIN_SEGRETO = "1234"
 
+# --- SISTEMA DI MEMORIA PER NASCONDERE IL PIN ---
+if "autenticato" not in dict_streamlit.session_state:
+    dict_streamlit.session_state["autenticato"] = False
+
 def traduci_in_italiano(testo):
     if not testo: return "Dato non presente."
-    testo_sicuro = testo[:4000] # Limite per velocizzare
+    testo_sicuro = testo[:4000]
     try:
         return GoogleTranslator(source='en', target='it').translate(testo_sicuro)
     except:
         return "Errore di traduzione temporaneo."
 
 def riassumi_testo(testo, num_frasi=4):
-    """Bisturi automatico: taglia il testo per mostrare solo le informazioni principali"""
     if not testo: return ""
     frasi = testo.split(". ")
     frasi_brevi = frasi[:num_frasi]
@@ -38,48 +42,74 @@ def formatta_a_punti(testo):
     return testo_bello
 
 dict_streamlit.title("⚕️ Prontuario Clinico Rapido")
-pin_inserito = dict_streamlit.text_input("Inserisci il PIN per accedere:", type="password")
 
-if pin_inserito == PIN_SEGRETO:
+# --- SCHERMATA BLOCCO (Si vede solo se non hai messo il PIN) ---
+if not dict_streamlit.session_state["autenticato"]:
+    dict_streamlit.write("Inserisci il PIN di sicurezza per sbloccare il prontuario.")
+    pin_inserito = dict_streamlit.text_input("🔑 PIN:", type="password")
+    
+    if pin_inserito == PIN_SEGRETO:
+        dict_streamlit.session_state["autenticato"] = True
+        dict_streamlit.rerun() # Ricarica istantaneamente la pagina per far sparire la barra!
+    elif pin_inserito != "":
+        dict_streamlit.error("PIN errato. Riprova.")
+
+# --- SCHERMATA APP (Si vede solo dopo aver messo il PIN) ---
+if dict_streamlit.session_state["autenticato"]:
+    
+    # Pulsantino per chiudere l'app e bloccarla
+    col1, col2 = dict_streamlit.columns([8, 2])
+    with col2:
+        if dict_streamlit.button("🔒 Esci"):
+            dict_streamlit.session_state["autenticato"] = False
+            dict_streamlit.rerun()
+            
     nome_farmaco_it = dict_streamlit.text_input("🔍 Principio Attivo (es: furosemide, amoxicillina):")
     
     if nome_farmaco_it:
-        # Traduciamo la richiesta in inglese per il database USA
-        nome_farmaco_en = GoogleTranslator(source='it', target='en').translate(nome_farmaco_it).lower()
-        # Chiediamo alla FDA di darci fino a 15 formulazioni diverse di questo farmaco
-        url_api = f"https://api.fda.gov/drug/label.json?search=openfda.generic_name:\"{nome_farmaco_en}\"&limit=15"
+        dict_streamlit.info("Ricerca di tutte le formulazioni in corso... ⏳")
+        nome_farmaco_en = GoogleTranslator(source='it', target='en').translate(nome_farmaco_it).lower().strip()
+        
+        # Pulizia del testo per evitare errori nel link (es. trasforma gli spazi)
+        nome_farmaco_url = urllib.parse.quote(nome_farmaco_en)
+        
+        # Ora chiediamo ben 50 documenti diversi, per scovare ogni singola formulazione!
+        url_api = f"https://api.fda.gov/drug/label.json?search=openfda.generic_name:{nome_farmaco_url}&limit=50"
         
         try:
             with urllib.request.urlopen(url_api) as risposta:
                 dati = json.loads(risposta.read().decode())
                 
                 if "results" in dati:
-                    # Raccogliamo tutte le vie di somministrazione disponibili
                     formulazioni_trovate = {}
                     for risultato in dati["results"]:
                         dati_fda = risultato.get("openfda", {})
-                        forma = dati_fda.get("dosage_form", [""])[0].upper()
-                        via = dati_fda.get("route", [""])[0].upper()
+                        forme = dati_fda.get("dosage_form", [])
+                        vie = dati_fda.get("route", [])
                         
-                        if forma and via:
-                            chiave = f"Via {via} - {forma}"
-                            if chiave not in formulazioni_trovate:
-                                formulazioni_trovate[chiave] = risultato
+                        # Se il documento specifica la via e la forma, lo salviamo
+                        if forme and vie:
+                            forma = forme[0].upper()
+                            via = vie[0].upper()
+                            
+                            # Escludiamo la polvere grezza per i produttori
+                            if "BULK" not in forma: 
+                                chiave = f"{via} - {forma}"
+                                if chiave not in formulazioni_trovate:
+                                    formulazioni_trovate[chiave] = risultato
                                 
                     if not formulazioni_trovate:
-                        dict_streamlit.warning("Dati trovati, ma formulazioni specifiche non elencate.")
+                        dict_streamlit.warning("Documenti trovati, ma nessuno specifica la formulazione esatta.")
                         formulazioni_trovate["Generico (Dati non specifici)"] = dati["results"][0]
 
                     dict_streamlit.success(f"✅ Molecola trovata: **{nome_farmaco_it.upper()}**")
                     
-                    # 1. MENU A TENDINA MAGICO
                     scelta = dict_streamlit.selectbox("👇 Seleziona la formulazione esatta che hai in mano:", list(formulazioni_trovate.keys()))
                     
                     if scelta:
                         info_scelta = formulazioni_trovate[scelta]
-                        dict_streamlit.markdown(f"### Dati clinici per: {traduci_in_italiano(scelta)}")
+                        dict_streamlit.markdown(f"### Dati per: {traduci_in_italiano(scelta)}")
                         
-                        # 2. ALLARME FRANTUMAZIONE INTELLIGENTE ED ESATTO
                         scelta_en = scelta.lower()
                         if "oral" in scelta_en and ("tablet" in scelta_en or "capsule" in scelta_en):
                             if "extended" in scelta_en or "delayed" in scelta_en or "enteric" in scelta_en or "release" in scelta_en:
@@ -89,20 +119,17 @@ if pin_inserito == PIN_SEGRETO:
                         elif "injection" in scelta_en or "intravenous" in scelta_en:
                             dict_streamlit.info("💉 **USO PARENTERALE.** Verificare incompatibilità con i liquidi di infusione (es. SF o SG).")
                             
-                        # 3. SCHEDE CON TESTI TAGLIATI E RIASSUNTI
                         tab1, tab2, tab3, tab4 = dict_streamlit.tabs(["⏱️ Posologia", "⚠️ Reazioni Avverse", "🔄 Interazioni", "❌ Controind."])
                         
                         with tab1:
                             if "dosage_and_administration" in info_scelta:
-                                # Prendiamo le prime 8 frasi della posologia (le più importanti)
                                 testo_posologia = riassumi_testo(info_scelta["dosage_and_administration"][0], num_frasi=8)
                                 dict_streamlit.markdown(formatta_a_punti(traduci_in_italiano(testo_posologia)))
                             else: dict_streamlit.write("Dato non estratto in sintesi.")
                                 
                         with tab2:
-                            dict_streamlit.caption("Mostro solo i sintomi più comuni/rilevanti (prime indicazioni del documento ufficiale).")
+                            dict_streamlit.caption("Sintomi più comuni (prime indicazioni del documento ufficiale).")
                             if "adverse_reactions" in info_scelta:
-                                # Tagliamo le reazioni avverse alle prime 4 frasi!
                                 testo_avverse = riassumi_testo(info_scelta["adverse_reactions"][0], num_frasi=4)
                                 dict_streamlit.markdown(formatta_a_punti(traduci_in_italiano(testo_avverse)))
                             else: dict_streamlit.write("Dato non estratto in sintesi.")
@@ -120,7 +147,4 @@ if pin_inserito == PIN_SEGRETO:
                             else: dict_streamlit.write("Nessuna controindicazione assoluta segnalata in evidenza.")
 
         except Exception as e:
-            dict_streamlit.error("Molecola non trovata. Controlla l'ortografia e assicurati di usare il principio attivo e non il nome commerciale.")
-
-elif pin_inserito != "":
-    dict_streamlit.error("PIN non valido. Accesso negato.")
+            dict_streamlit.error("Molecola non trovata nel database ufficiale. Controlla l'ortografia.")
